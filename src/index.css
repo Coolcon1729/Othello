@@ -1,0 +1,49 @@
+body {
+    font: 32px Arial, sans-serif;
+    color: #F0F0F0;
+    margin: 30px;
+    background: #222222;
+}
+svg {
+    /*outline: 2px solid green;*/
+    height: 100%;
+    width: 100%;
+}
+svg>circle {
+    r: 30px;
+    cx: 50%;
+    cy: 50%;
+    stroke: #222222;
+    stroke-width: 1.5px;
+}
+h1 {
+    text-align: center;
+}
+.board-row:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.status {
+    margin-bottom: 10px;
+}
+.square {
+    background: #14A7D0;
+    border: 2px solid #303030;
+    float: left;
+    height: 80px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0px;
+    width: 80px;
+    outline: none;
+}
+.square:hover {
+    background: #24B7E0;
+}
+.square:active {
+    background: #34C7F0;
+}
+.game-info {
+    margin-left: 20px;
+}
