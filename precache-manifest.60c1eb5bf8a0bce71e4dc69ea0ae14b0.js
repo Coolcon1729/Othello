@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9ba702898f13dd48f0ab1a7669f36541",
+    "revision": "e141306b1fc060cc6c4c50847d1e237f",
     "url": "/Othello/index.html"
   },
   {
-    "revision": "0ee15a0458eb9724315f",
-    "url": "/Othello/static/css/main.c83e55dc.chunk.css"
+    "revision": "508ae4889683ad9aa33f",
+    "url": "/Othello/static/css/main.7c1e4dd7.chunk.css"
   },
   {
     "revision": "e45d52546ee902b39c63",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Othello/static/js/2.ad80ea67.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0ee15a0458eb9724315f",
-    "url": "/Othello/static/js/main.150ea3df.chunk.js"
+    "revision": "508ae4889683ad9aa33f",
+    "url": "/Othello/static/js/main.e585c2db.chunk.js"
   },
   {
     "revision": "e2a97f1c62de11aef9ec",
