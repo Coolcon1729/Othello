@@ -10,7 +10,6 @@ svg {
     width: 100%;
 }
 svg>circle {
-    r: 30px;
     cx: 50%;
     cy: 50%;
     stroke: #222222;
