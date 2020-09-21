@@ -1,3 +1,7 @@
+@keyframes flashYellow {
+    from {color: #F0F0F0;}
+    to {color: yellow;}
+}
 body {
     font: 32px Arial, sans-serif;
     color: #F0F0F0;
@@ -5,26 +9,37 @@ body {
     background: #222222;
 }
 svg {
-    /*outline: 2px solid green;*/
     height: 100%;
     width: 100%;
 }
 svg>circle {
     cx: 50%;
     cy: 50%;
-    stroke: #222222;
     stroke-width: 1.5px;
 }
-h1 {
+h1, h4 {
     text-align: center;
 }
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
+.game {
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(#2A2A2A, #222222);
+    align-items: center;
 }
-.status {
-    margin-bottom: 10px;
+.centerDisplay {
+    width: 100%;
+}
+.centerDisplay, .blackScore, .whiteScore {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+.score[loading='1'] {
+    animation: flashYellow 1s 1;
+}
+.board {
+    border: 40px solid #603005;
 }
 .square {
     background: #14A7D0;
@@ -42,7 +57,4 @@ h1 {
 }
 .square:active {
     background: #34C7F0;
-}
-.game-info {
-    margin-left: 20px;
 }

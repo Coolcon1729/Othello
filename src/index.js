@@ -3,25 +3,50 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 const size = 8;
+const openCircle = <circle
+    r="30px"
+    fillOpacity="0"
+    stroke="#222222"
+/>
+const blackCircle = <circle
+    r="30px"
+    fillOpacity="0.95" 
+    fill="#101010" 
+    stroke="#BBBBBB"
+/>;
+const whiteCircle = <circle
+    r="30px" 
+    fillOpacity="0.95" 
+    fill="#F0F0F0" 
+    stroke="#000000"
+/>;
 
-function Square({value, onClick, placed}) {
-    let content;
+function Square({ value, onClick, placed }) {
+    let content = null;
     // holds a red dot if the disk was just placed
-    const indicator = placed ? <circle r="3px" fill="#FF0000" style={{strokeWidth:"0px"}}/> : null;
+    const indicator = placed ? <circle r="3px" fill="#FF0000"/> : null;
 
-    // determine what to display
+    // Determine what to display.
     switch (value) {
         case " ":
-            content = "";
             break;
         case "O":
-            content = <svg><circle r="30px" fillOpacity="0"/>{indicator}</svg>;
+            content = <svg>
+                {openCircle}
+                {indicator}
+            </svg>
             break;  
         case "B":
-            content = <svg><circle r="30px" fillOpacity="0.95" fill="#101010"/>{indicator}</svg>;
+            content = <svg>
+                {blackCircle}
+                {indicator}
+            </svg>;
             break;
         case "W":
-            content = <svg><circle r="30px" fillOpacity="0.95" fill="#F0F0F0"/>{indicator}</svg>;
+            content = <svg>
+                {whiteCircle}
+                {indicator}
+            </svg>;
             break;
         default:
             alert("Something ain't right here.");
@@ -30,7 +55,27 @@ function Square({value, onClick, placed}) {
         <button
             className="square"
             onClick={onClick}
-        >{content}</button>
+        >
+            {content}
+        </button>
+    );
+}
+
+function Score({ score }) {
+    const [loading, setLoading] = React.useState(0);
+    return(
+        <div
+            className="score"
+            onClick={() => setLoading(1)}
+            onAnimationEnd={() => setLoading(0)}
+            loading={loading}
+            style={{
+                fontSize: "40px",
+                padding: "10px"
+            }}
+        >
+            {score}
+        </div>
     );
 }
 
@@ -41,7 +86,9 @@ class Board extends React.Component {
                 key={size * i + j}
                 value={this.props.squares[i][j]}
                 onClick={() => this.props.onClick(i, j)}
-                placed={this.props.placed && i === this.props.placed[0] && j === this.props.placed[1]}
+                placed={this.props.placed &&
+                        i === this.props.placed[0] && 
+                        j === this.props.placed[1]}
             />
         );
     }
@@ -53,10 +100,21 @@ class Board extends React.Component {
             for (let j = 0; j < size; j++) {
                 row.push(this.renderSquare(i, j));
             }
-            items.push(<div className="board-row" key={i}>{row}</div>);
+            items.push(
+                <div className="board-row" key={i}>
+                    {row}
+                </div>
+            );
         }
         return(
-            <div>
+            <div
+                className="board"
+                style={{
+                    height:`${80*size - 4}px`,
+                    width:`${80*size - 4}px`,
+                    minWidth:`${80*size - 4}px`
+                }}
+            >
                 {items}
             </div>
         );
@@ -213,6 +271,13 @@ class Game extends React.Component {
             turn: this.state.turn + 1
         });
     }
+    restart() {
+        this.setState({
+            history: this.state.history.slice(0, !this.state.turn ? 1 : this.state.history.length + 1),
+            bIsNext: true,
+            turn: 0
+        });
+    }
     undo() {
         // determines whether the last turn was passed
         const noMoves = !hasMoves(this.state.history[this.state.turn].flipSquares, this.state.bIsNext ? "W" : "B");
@@ -222,42 +287,61 @@ class Game extends React.Component {
             turn: this.state.turn - 1
         });
     }
+    redo() {
+        // determines whether the last turn was passed
+        const noMoves = !hasMoves(this.state.history[this.state.turn + 1].flipSquares, this.state.bIsNext ? "W" : "B");
+        this.setState({
+            history: this.state.history,
+            bIsNext: !this.state.bIsNext ^ noMoves,
+            turn: this.state.turn + 1
+        });
+    }
     render() {
         const history = this.state.history;
         const current = history[this.state.turn];
 
         // holds current game status
-        let status;
+        let statusText;
         if (!(hasMoves(current.flipSquares, "B") + hasMoves(current.flipSquares, "W"))) {
             if (current.blackScore === current.whiteScore) {
-                status = "Draw!";
+                statusText = "Draw!";
             } else if (current.blackScore > current.whiteScore) {
-                status = `Black has won with ${current.blackScore} points!`;
+                statusText = `Black has won with ${current.blackScore} points!`;
             } else {
-                status = `White has won with ${current.whiteScore} points!`;
+                statusText = `White has won with ${current.whiteScore} points!`;
             }
             if (current.blackScore + current.whiteScore < size * size) {
-                status = `No mores moves. ${status}`;
+                statusText = `No mores moves. ${statusText}`;
             }
         } else {
-            status = `It's ${this.state.bIsNext ? "Black" : "White"}'s turn!`;
+            statusText = `It's ${this.state.bIsNext ? "Black" : "White"}'s turn!`;
         }
 
         return(
-            <div className="game">
-                <div className="game-board">
+            <div
+                className="game"
+                style={{
+                    height:`${80*(size + 2.5)}px`
+                }}
+            >
+                <div className="status">{statusText}</div>
+                <div className="centerDisplay">
+                    <div className="blackScore">
+                        <svg style={{height: "61px", width: "61px"}}>{blackCircle}</svg><Score score={current.blackScore} />
+                    </div>
                     <Board
                         squares={current.squares}
                         onClick={(i, j) => this.handleClick(i, j)}
                         placed={current.placed}
                     />
-                </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <div className="scoreDisplay">
-                        Black: {current.blackScore}  White: {current.whiteScore}
+                    <div className="whiteScore">
+                        <svg style={{height: "61px", width: "61px"}}>{whiteCircle}</svg><Score score={current.whiteScore} />
                     </div>
+                </div>
+                <div className="buttons">
+                    <button onClick={() => this.restart()}>Restart</button>
                     <button onClick={() => this.undo()} disabled={!this.state.turn}>Undo</button>
+                    <button onClick={() => this.redo()} disabled={!(this.state.turn - history.length + 1)}>Redo</button>
                 </div>
             </div>
         );
@@ -266,11 +350,12 @@ class Game extends React.Component {
 
 class App extends React.Component {
     render() {
+        console.log("hello");
         return(
             <div className="app">
                 <div className="header">
                     <h1>2 Player Othello</h1>
-                    <h4>How to play</h4>
+                    <h4><a href="https://www.ultraboardgames.com/othello/game-rules.php" target="_blank" rel="noopener noreferrer">How to play</a></h4>
                 </div>
                 <Game />
             </div>
